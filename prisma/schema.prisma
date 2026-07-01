@@ -13,4 +13,39 @@ model User {
   role      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Agriculteur Agriculteur?
+  ConsommateurCommercant ConsommateurCommercant?
+}
+
+model Agriculteur {
+    id  Int   @id @default(autoincrement())
+    userId  Int  @unique
+    user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    nom  String
+    prenom  String
+    localisation  String
+    available Boolean  @default(true)
+    numeroAgriculmobile String 
+    numeroAgriculwhatsapp String
+    produit String []
+    genre String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    
+}
+
+model ConsommateurCommercant {
+  idC Int @id @default(autoincrement())
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nomC String
+  prenomC String
+  localisationC String
+  numeroMobile String
+  numeroWhatsapp String
+  demande String []
+  genre String
+  metier String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

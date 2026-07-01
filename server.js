@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import profileRoutes from './routes/profileRoutes.js'
 
 const app = express()
 const PORT = process.env.PORT || 5025
@@ -14,6 +15,7 @@ app.use(express.json())
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
+app.use('/api/profile', profileRoutes)
 
 // Route de test
 app.get('/', (req, res) => {
