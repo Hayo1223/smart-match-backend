@@ -15,7 +15,7 @@ app.use('/api/auth', authRoutes)
 
 // Route de test
 app.get('/', (req, res) => {
-  res.json({ message: 'Smart Match API fonctionne ✅' })
+  res.json({ message: 'Smart Match API fonctionne [Yes]' })
 })
 
 app.listen(PORT, () => {

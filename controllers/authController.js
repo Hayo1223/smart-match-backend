@@ -12,8 +12,8 @@ export const register = async (req, res) => {
       return res.status(400).json({ error: 'Email, mot de passe et rôle sont requis' })
     }
 
-    if (!['student', 'company'].includes(role)) {
-      return res.status(400).json({ error: 'Rôle invalide. Choisir student ou company' })
+    if (!['Agriculteur', 'Commerçant/Consommateur'].includes(role)) {
+      return res.status(400).json({ error: 'Rôle invalide. Choisir Agriculteur ou Commerçant/Consommateur' })
     }
 
     // Vérifier si l'email existe déjà
