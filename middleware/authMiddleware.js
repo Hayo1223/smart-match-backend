@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+/*import jwt from 'jsonwebtoken'
 
 const authMiddleware = (req, res, next) => {
   try {
@@ -29,4 +29,4 @@ const authMiddleware = (req, res, next) => {
   }
 }
 
-export default authMiddleware
+export default authMiddleware*/
