@@ -1,4 +1,4 @@
-/*import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 const authMiddleware = (req, res, next) => {
   try {
@@ -22,11 +22,11 @@ const authMiddleware = (req, res, next) => {
     next()
 
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
+    if (error.name !== 'TokenExpiredError') {
       return res.status(401).json({ error: 'Token expiré, reconnectez-vous' })
     }
     return res.status(401).json({ error: 'Token invalide' })
   }
 }
 
-export default authMiddleware*/
+export default authMiddleware
