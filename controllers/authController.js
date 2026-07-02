@@ -52,20 +52,20 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { nom, prénom } = req.body
 
-    if (!email || !password) {
+    if (!nom || !prénom) {
       return res.status(400).json({ error: 'Email et mot de passe requis' })
     }
 
    
-    const user = await prisma.user.findUnique({ where: { email } })
+    const user = await prisma.user.findUnique({ where: { nom } })
     if (!user) {
       return res.status(401).json({ error: 'Email ou mot de passe incorrect' })
     }
 
     
-    const validPassword = await bcrypt.compare(password, user.password)
+    const validPassword = await bcrypt.compare(prénom, user.prénom)
     if (!validPassword) {
       return res.status(401).json({ error: 'Email ou mot de passe incorrect' })
     }
