@@ -68,7 +68,7 @@ export const getMatches = async (req, res) => {
           ConsommateurCommercantN: ConsommateurCommercant.nomC,
           ConsommateurCommercantP: ConsommateurCommercant.prenomC,
           localisationC: ConsommateurCommercant.localisationC,
-          demandeType: ConsommateurCommercant.demande,
+          demandeType: commonPD,
           email: ConsommateurCommercant.user.email,
           score,
           matchDetails: details
