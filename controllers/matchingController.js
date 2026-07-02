@@ -7,7 +7,7 @@ const calculateScore = (Agriculteur, ConsommateurCommercant) => {
 
 
   const commonPD = Agriculteur.produit.filter(produit =>
-    ConsommateurCommercant.demande.includes(produit)
+    ConsommateurCommercant.demande.includes(produit)//Peut etre une boucle pourrais le resoudre 
   )
   if (commonPD.length > 0) {
     score += commonPD.length * 15
@@ -18,7 +18,7 @@ const calculateScore = (Agriculteur, ConsommateurCommercant) => {
   if (Agriculteur.localisation.toLowerCase() === ConsommateurCommercant.localisationC.toLowerCase()) {
     score += 20
     details.push(`Même ville : ${Agriculteur.localisation} (+20 pts)`)
-  }
+  }//Ici aussi 
 
   
   if (Agriculteur.available) {
@@ -68,7 +68,7 @@ export const getMatches = async (req, res) => {
           ConsommateurCommercantN: ConsommateurCommercant.nomC,
           ConsommateurCommercantP: ConsommateurCommercant.prenomC,
           localisationC: ConsommateurCommercant.localisationC,
-          demandeType: commonPD,
+          demandeType: ConsommateurCommercant.demande,
           email: ConsommateurCommercant.user.email,
           score,
           matchDetails: details
