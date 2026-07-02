@@ -40,7 +40,7 @@ export const getMatches = async (req, res) => {
     }
 
     
-    const Agriculteur = await prisma.Agriculteur.findUnique({
+    const Agriculteur = await prisma.agriculteur.findUnique({
       where: { userId }
     })
 
@@ -51,7 +51,7 @@ export const getMatches = async (req, res) => {
     }
 
     
-    const ConsommateurCommercant = await prisma.ConsommateurCommercant.findMany({
+    const ConsommateurCommercant = await prisma.consommateurCommercant.findMany({
       include: { user: { select: { email: true } } }
     })
 
