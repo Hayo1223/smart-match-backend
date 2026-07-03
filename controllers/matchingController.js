@@ -5,26 +5,56 @@ const calculateScore = (Agriculteur, ConsommateurCommercant) => {
   let score = 0
   const details = []
 
-
-  const commonPD = Agriculteur.produit.filter(produit =>
-    ConsommateurCommercant.demande.includes(produit)//Peut etre une boucle pourrais le resoudre 
+  
+  const produitsCommuns = Agriculteur.produit.filter(p =>
+    ConsommateurCommercant.demande?.some(d =>
+      d.toLowerCase().trim() === p.toLowerCase().trim()
+    )
   )
-  if (commonPD.length > 0) {
-    score += commonPD.length * 15
-    details.push(`Element en commun : ${commonPD.join(', ')} (+${commonPD.length * 15} pts)`)
+  if (produitsCommuns.length > 0) {
+    score += produitsCommuns.length * 20
+    details.push(`Produits en commun : ${produitsCommuns.join(', ')} (+${produitsCommuns.length * 20} pts)`)
   }
 
-  
-  if (Agriculteur.localisation.toLowerCase() === ConsommateurCommercant.localisationC.toLowerCase()) {
-    score += 20
-    details.push(`Même ville : ${Agriculteur.localisation} (+20 pts)`)
-  }//Ici aussi 
+
+  const locAgri = Agriculteur.localisation?.toLowerCase().trim()
+  const locConso = ConsommateurCommercant.localisationC?.toLowerCase().trim()
+  if (locAgri && locConso && locAgri === locConso) {
+    score += 25
+    details.push(`Même localisation : ${Agriculteur.localisation} (+25 pts)`)
+  }
 
   
   if (Agriculteur.available) {
-    score += 10
-    details.push(`Agriculteur disponible ou verifier (+10 pts)`)
+    score += 15
+    details.push(`Agriculteur disponible ou verifié (+15 pts)`)
   }
+
+
+  const aContact = Agriculteur.numeroAgriculmobile || Agriculteur.numeroAgriculwhatsapp
+  if (aContact) {
+    score += 10
+    details.push(`Contact disponible (+10 pts)`)
+  }
+
+  
+if (Agriculteur.genre && ConsommateurCommercant.genre) {
+  const genreAgri = Agriculteur.genre.toLowerCase()
+  const genreConso = ConsommateurCommercant.genre.toLowerCase()
+
+  const genresOpposés = (
+    (genreAgri === 'masculin' && genreConso === 'féminin') ||
+    (genreAgri === 'féminin' && genreConso === 'masculin')
+  )
+
+  if (genreAgri === genreConso) {
+    score += 7
+    details.push(`Même genre : ${Agriculteur.genre} (+7 pts)`)
+  } else if (genresOpposés) {
+    score += 5
+    details.push(`Genre opposé : ${Agriculteur.genre} ↔ ${ConsommateurCommercant.genre} (+5 pts)`)
+  }
+}
 
   return { score, details }
 }
@@ -34,51 +64,61 @@ export const getMatches = async (req, res) => {
   try {
     const { userId, role } = req.user
 
-    
     if (role !== 'Agriculteur') {
-      return res.status(403).json({ error: 'Seuls les Agriculteur peuvent accéder au matching' })
-    }
-
-    
-    const Agriculteur = await prisma.agriculteur.findUnique({
-      where: { userId }
-    })
-
-    if (!Agriculteur) {
-      return res.status(404).json({
-        error: 'Profil Agriculteur introuvable. Créez votre profil avant de lancer un matching.'
+      return res.status(403).json({
+        error: 'Seuls les agriculteurs peuvent accéder au matching'
       })
     }
 
     
-    const ConsommateurCommercant = await prisma.consommateurCommercant.findMany({
-      include: { user: { select: { email: true } } }
+    const agriculteur = await prisma.agriculteurProfile.findUnique({
+      where: { userId }
     })
 
-    if (ConsommateurCommercant.length === 0) {
-      return res.json({ message: 'Aucun Consommateur ou Commercant disponible pour le moment', matches: [] })
+    if (!agriculteur) {
+      return res.status(404).json({
+        error: 'Profil agriculteur introuvable. Créez votre profil avant de lancer un matching.'
+      })
     }
 
     
-    const matches = ConsommateurCommercant
-      .map(ConsommateurCommercant => {
-        const { score, details } = calculateScore(Agriculteur, ConsommateurCommercant)
+    const ConsommateursCommercant = await prisma.consommateurCommercantProfile.findMany({
+      include: {
+        user: { select: { email: true } }
+      }
+    })
+
+    if (ConsommateursCommercant.length === 0) {
+      return res.json({
+        message: 'Aucun consommateur disponible pour le moment',
+        matches: []
+      })
+    }
+
+    
+    const matches = ConsommateursCommercant
+      .map(conso => {
+        const { score, details } = calculateScore(Agriculteur, conso)
         return {
-          ConsommateurCommercantId: ConsommateurCommercant.idC,
-          ConsommateurCommercantN: ConsommateurCommercant.nomC,
-          ConsommateurCommercantP: ConsommateurCommercant.prenomC,
-          localisationC: ConsommateurCommercant.localisationC,
-          demandeType: ConsommateurCommercant.demande,
-          email: ConsommateurCommercant.user.email,
+          consommateurId: conso.id,
+          nomC: conso.nomC,
+          prenomC: conso.prenomC,
+          localisationC: conso.localisationC,
+          metier: conso.metier,
+          demande: conso.demande,
+          genre: conso.genre,
+          numeroMobile: conso.numeroMobile,
+          numeroWhatsapp: conso.numeroWhatsapp,
+          email: conso.user.email,
           score,
           matchDetails: details
         }
       })
-      .filter(match => match.score > 0) 
-      .sort((a, b) => b.score - a.score) 
+      .filter(match => match.score > 0)
+      .sort((a, b) => b.score - a.score)
 
     res.json({
-      AgriculteurN: `${Agriculteur.nom} ${Agriculteur.prenom}`,
+      nom: `${Agriculteur.nom} ${Agriculteur.prenom}`,
       totalMatches: matches.length,
       matches
     })
