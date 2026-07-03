@@ -60,12 +60,13 @@ if (agriculteur.genre && consommateurCommercant.genre) {
   
   const tousLesGenres = await prisma.agriculteur.findMany({
     select: { genre: true },
-    distinct: ['genre']
+    distinct: ['genre'] 
   })
 
-  const genresDisponibles = tousLesGenres
-    .map(g => g.genre.toLowerCase().trim())
-    .filter(Boolean)
+  const genresDisponibles = await prisma.consommateurCommercant.findMany({
+    select: { genre: true },
+    distinct: ['genre'] 
+  })
 
   
   if (genreAgri === genreConso) {
