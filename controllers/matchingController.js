@@ -55,7 +55,7 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
     const genreAgri = agriculteur.genre.toLowerCase().trim()
     const genreConso = consommateurCommercant.genre.toLowerCase().trim()
 
-    const [genresAgriculteurs, genresConsommateurCommercant] = await Promise.all([
+    const [genreAgriculteurs, genreConsommateurCommercant] = await Promise.all([
   prisma.agriculteur.findMany({
     select: { genre: true },
     distinct: ['genre']
@@ -67,8 +67,8 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
 ])
 
 const genresDisponibles = [
-  ...genresAgriculteurs.map(g => g.genre?.toLowerCase().trim()),
-  ...genresConsommateurs.map(g => g.genre?.toLowerCase().trim())
+  ...genreAgriculteurs.map(g => g.genre?.toLowerCase().trim()),
+  ...genreConsommateurCommercant.map(g => g.genre?.toLowerCase().trim())
 ].filter(Boolean)
 
     if (genreAgri === genreConso) {
