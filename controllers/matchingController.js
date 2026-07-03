@@ -15,13 +15,26 @@ const calculateScore = (agriculteur, consommateurCommercant) => {
     details.push(`Produits en commun : ${produitsCommuns.join(', ')} (+${produitsCommuns.length * 20} pts)`)
   }
 
-  
-  const locAgri = agriculteur.localisation?.toLowerCase().trim()
-  const locConso = consommateurCommercant.localisationC?.toLowerCase().trim()
-  if (locAgri && locConso && locAgri === locConso) {
-    score += 25
-    details.push(`Même localisation : ${agriculteur.localisation} (+25 pts)`)
-  }
+const locAgriMots = agriculteur.localisation
+  ?.toLowerCase()
+  .split(/[\s,\/\-]+/)   
+  .map(m => m.trim())
+  .filter(Boolean) ?? []
+
+const locConsoMots = consommateurCommercant.localisationC
+  ?.toLowerCase()
+  .split(/[\s,\/\-]+/)
+  .map(m => m.trim())
+  .filter(Boolean) ?? []
+
+const locCommunes = locAgriMots.filter(mot =>
+  locConsoMots.includes(mot) && mot.length > 2  
+)
+
+if (locCommunes.length > 0) {
+  score += locCommunes.length * 25
+  details.push(`Localisation commune : ${locCommunes.join(', ')} (+${locCommunes.length * 25} pts)`)
+}
 
   
   if (agriculteur.available) {
