@@ -1,13 +1,12 @@
 import prisma from '../lib/prismaClient.js'
 
-
-const calculateScore = (Agriculteur, ConsommateurCommercant) => {
+const calculateScore = (agriculteur, consommateurCommercant) => {
   let score = 0
   const details = []
 
   
-  const produitsCommuns = Agriculteur.produit.filter(p =>
-    ConsommateurCommercant.demande?.some(d =>
+  const produitsCommuns = agriculteur.produit.filter(p =>
+    consommateurCommercant.demande?.some(d =>
       d.toLowerCase().trim() === p.toLowerCase().trim()
     )
   )
@@ -16,45 +15,45 @@ const calculateScore = (Agriculteur, ConsommateurCommercant) => {
     details.push(`Produits en commun : ${produitsCommuns.join(', ')} (+${produitsCommuns.length * 20} pts)`)
   }
 
-
-  const locAgri = Agriculteur.localisation?.toLowerCase().trim()
-  const locConso = ConsommateurCommercant.localisationC?.toLowerCase().trim()
+  
+  const locAgri = agriculteur.localisation?.toLowerCase().trim()
+  const locConso = consommateurCommercant.localisationC?.toLowerCase().trim()
   if (locAgri && locConso && locAgri === locConso) {
     score += 25
-    details.push(`Même localisation : ${Agriculteur.localisation} (+25 pts)`)
+    details.push(`Même localisation : ${agriculteur.localisation} (+25 pts)`)
   }
 
   
-  if (Agriculteur.available) {
+  if (agriculteur.available) {
     score += 15
-    details.push(`Agriculteur disponible ou verifié (+15 pts)`)
+    details.push(`Agriculteur disponible ou vérifié (+15 pts)`)
   }
 
-
-  const aContact = Agriculteur.numeroAgriculmobile || Agriculteur.numeroAgriculwhatsapp
+  
+  const aContact = agriculteur.numeroAgriculmobile || agriculteur.numeroAgriculwhatsapp
   if (aContact) {
     score += 10
     details.push(`Contact disponible (+10 pts)`)
   }
 
   
-if (Agriculteur.genre && ConsommateurCommercant.genre) {
-  const genreAgri = Agriculteur.genre.toLowerCase()
-  const genreConso = ConsommateurCommercant.genre.toLowerCase()
+  if (agriculteur.genre && consommateurCommercant.genre) {
+    const genreAgri = agriculteur.genre.toLowerCase()
+    const genreConso = consommateurCommercant.genre.toLowerCase()
 
-  const genresOpposés = (
-    (genreAgri === 'masculin' && genreConso === 'féminin') ||
-    (genreAgri === 'féminin' && genreConso === 'masculin')
-  )
+    const genresOpposés = (
+      (genreAgri === 'masculin' && genreConso === 'féminin') ||
+      (genreAgri === 'féminin' && genreConso === 'masculin')
+    )
 
-  if (genreAgri === genreConso) {
-    score += 7
-    details.push(`Même genre : ${Agriculteur.genre} (+7 pts)`)
-  } else if (genresOpposés) {
-    score += 5
-    details.push(`Genre opposé : ${Agriculteur.genre} ↔ ${ConsommateurCommercant.genre} (+5 pts)`)
+    if (genreAgri === genreConso) {
+      score += 7
+      details.push(`Même genre : ${agriculteur.genre} (+7 pts)`)
+    } else if (genresOpposés) {
+      score += 5
+      details.push(`Genre opposé : ${agriculteur.genre} ↔ ${consommateurCommercant.genre} (+5 pts)`)
+    }
   }
-}
 
   return { score, details }
 }
@@ -70,7 +69,6 @@ export const getMatches = async (req, res) => {
       })
     }
 
-    
     const agriculteur = await prisma.agriculteurProfile.findUnique({
       where: { userId }
     })
@@ -81,24 +79,22 @@ export const getMatches = async (req, res) => {
       })
     }
 
-    
-    const ConsommateursCommercant = await prisma.consommateurCommercantProfile.findMany({
+    const consommateursCommercants = await prisma.consommateurCommercantProfile.findMany({
       include: {
         user: { select: { email: true } }
       }
     })
 
-    if (ConsommateursCommercant.length === 0) {
+    if (consommateursCommercants.length === 0) {
       return res.json({
         message: 'Aucun consommateur disponible pour le moment',
         matches: []
       })
     }
 
-    
-    const matches = ConsommateursCommercant
+    const matches = consommateursCommercants
       .map(conso => {
-        const { score, details } = calculateScore(Agriculteur, conso)
+        const { score, details } = calculateScore(agriculteur, conso)
         return {
           consommateurId: conso.id,
           nomC: conso.nomC,
@@ -118,7 +114,7 @@ export const getMatches = async (req, res) => {
       .sort((a, b) => b.score - a.score)
 
     res.json({
-      nom: `${Agriculteur.nom} ${Agriculteur.prenom}`,
+      nom: `${agriculteur.nom} ${agriculteur.prenom}`,
       totalMatches: matches.length,
       matches
     })
