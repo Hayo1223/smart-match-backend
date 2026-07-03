@@ -1,6 +1,7 @@
+import { Await } from 'react-router-dom'
 import prisma from '../lib/prismaClient.js'
 
-const calculateScore = (agriculteur, consommateurCommercant) => {
+const calculateScore = async (agriculteur, consommateurCommercant) => {
   let score = 0
   const details = []
 
