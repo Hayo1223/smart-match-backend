@@ -51,10 +51,11 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
 
   
   if (agriculteur.genre && consommateurCommercant.genre) {
+
     const genreAgri = agriculteur.genre.toLowerCase().trim()
     const genreConso = consommateurCommercant.genre.toLowerCase().trim()
 
-    const [genresAgriculteurs, genresConsommateurs] = await Promise.all([
+    const [genresAgriculteurs, genresConsommateurCommercant] = await Promise.all([
   prisma.agriculteur.findMany({
     select: { genre: true },
     distinct: ['genre']
