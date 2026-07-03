@@ -50,23 +50,33 @@ if (locCommunes.length > 0) {
   }
 
   
-  if (agriculteur.genre && consommateurCommercant.genre) {
-    const genreAgri = agriculteur.genre.toLowerCase()
-    const genreConso = consommateurCommercant.genre.toLowerCase()
+if (agriculteur.genre && consommateurCommercant.genre) {
 
-    const genresOpposés = (
-      (genreAgri === 'masculin' && genreConso === 'féminin') ||
-      (genreAgri === 'féminin' && genreConso === 'masculin')
-    )
+  
+  const genreAgri = agriculteur.genre.toLowerCase().trim()
+  const genreConso = consommateurCommercant.genre.toLowerCase().trim()
 
-    if (genreAgri === genreConso) {
-      score += 7
-      details.push(`Même genre : ${agriculteur.genre} (+7 pts)`)
-    } else if (genresOpposés) {
-      score += 5
-      details.push(`Genre opposé : ${agriculteur.genre} ↔ ${consommateurCommercant.genre} (+5 pts)`)
-    }
+  
+  const tousLesGenres = await prisma.agriculteur.findMany({
+    select: { genre: true },
+    distinct: ['genre']
+  })
+
+  const genresDisponibles = tousLesGenres
+    .map(g => g.genre.toLowerCase().trim())
+    .filter(Boolean)
+
+  
+  if (genreAgri === genreConso) {
+    score += 7
+    details.push(`Même genre : ${agriculteur.genre} (+5 pts)`)
+
+  
+  } else if (genresDisponibles.includes(genreAgri) && genresDisponibles.includes(genreConso)) {
+    score += 5
+    details.push(`Genre opposé : ${agriculteur.genre} ↔ ${consommateurCommercant.genre} (+7 pts)`)
   }
+}
 
   return { score, details }
 }
@@ -105,26 +115,29 @@ export const getMatches = async (req, res) => {
       })
     }
 
-    const matches = consommateursCommercants
-      .map(conso => {
-        const { score, details } = calculateScore(agriculteur, conso)
-        return {
-          consommateurId: conso.id,
-          nomC: conso.nomC,
-          prenomC: conso.prenomC,
-          localisationC: conso.localisationC,
-          metier: conso.metier,
-          demande: conso.demande,
-          genre: conso.genre,
-          numeroMobile: conso.numeroMobile,
-          numeroWhatsapp: conso.numeroWhatsapp,
-          email: conso.user.email,
-          score,
-          matchDetails: details
-        }
-      })
-      .filter(match => match.score > 0)
-      .sort((a, b) => b.score - a.score)
+    const matchesRaw = await Promise.all(
+  consommateursCommercants.map(async conso => {
+    const { score, details } = await calculateScore(agriculteur, conso)
+    return {
+      consommateurId: conso.id,
+      nomC: conso.nomC,
+      prenomC: conso.prenomC,
+      localisationC: conso.localisationC,
+      metier: conso.metier,
+      demande: conso.demande,
+      genre: conso.genre,
+      numeroMobile: conso.numeroMobile,
+      numeroWhatsapp: conso.numeroWhatsapp,
+      email: conso.user.email,
+      score,
+      matchDetails: details
+    }
+  })
+)
+
+const matches = matchesRaw
+  .filter(match => match.score > 0)
+  .sort((a, b) => b.score - a.score)
 
     res.json({
       nom: `${agriculteur.nom} ${agriculteur.prenom}`,
