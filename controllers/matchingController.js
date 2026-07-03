@@ -49,29 +49,36 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
     details.push(`Contact disponible (+10 pts)`)
   }
 
-  // Ne marche pas
+  
   if (agriculteur.genre && consommateurCommercant.genre) {
     const genreAgri = agriculteur.genre.toLowerCase().trim()
     const genreConso = consommateurCommercant.genre.toLowerCase().trim()
 
-    const tousLesGenres = await prisma.agriculteur.findMany({
-      select: { genre: true },
-      distinct: ['genre']
-    })
+    const [genresAgriculteurs, genresConsommateurs] = await Promise.all([
+  prisma.agriculteur.findMany({
+    select: { genre: true },
+    distinct: ['genre']
+  }),
+  prisma.consommateurCommercant.findMany({
+    select: { genre: true },
+    distinct: ['genre']
+  })
+])
 
-    const genresDisponibles = tousLesGenres
-      .map(g => g.genre.toLowerCase().trim())
-      .filter(Boolean)
+const genresDisponibles = [
+  ...genresAgriculteurs.map(g => g.genre?.toLowerCase().trim()),
+  ...genresConsommateurs.map(g => g.genre?.toLowerCase().trim())
+].filter(Boolean)
 
     if (genreAgri === genreConso) {
       score += 7
-      details.push(`Même genre : ${agriculteur.genre} (+5 pts)`)
+      details.push(`Même genre : ${agriculteur.genre} (+7 pts)`)
     } else if (
       genresDisponibles.includes(genreAgri) &&
       genresDisponibles.includes(genreConso)
     ) {
       score += 5
-      details.push(`Genre opposé : ${agriculteur.genre} ↔ ${consommateurCommercant.genre} (+7 pts)`)
+      details.push(`Genre opposé : ${agriculteur.genre} et ${consommateurCommercant.genre} (+5 pts)`)
     }
   }
 
