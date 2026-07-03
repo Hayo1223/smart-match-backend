@@ -4,7 +4,7 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
   let score = 0
   const details = []
 
-  // 1. Produits en commun (+20 pts chacun)
+  
   const produitsCommuns = agriculteur.produit.filter(p =>
     consommateurCommercant.demande?.some(d =>
       d.toLowerCase().trim() === p.toLowerCase().trim()
@@ -15,7 +15,7 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
     details.push(`Produits en commun : ${produitsCommuns.join(', ')} (+${produitsCommuns.length * 20} pts)`)
   }
 
-  // 2. Localisation — éléments en commun (+25 pts chacun)
+  
   const locAgriMots = agriculteur.localisation
     ?.toLowerCase()
     .split(/[\s,\/\-]+/)
@@ -36,20 +36,20 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
     details.push(`Localisation commune : ${locCommunes.join(', ')} (+${locCommunes.length * 25} pts)`)
   }
 
-  // 3. Agriculteur disponible (+15 pts)
+  
   if (agriculteur.available) {
     score += 15
     details.push(`Agriculteur disponible ou vérifié (+15 pts)`)
   }
 
-  // 4. Contact disponible (+10 pts)
+  
   const aContact = agriculteur.numeroAgriculmobile || agriculteur.numeroAgriculwhatsapp
   if (aContact) {
     score += 10
     details.push(`Contact disponible (+10 pts)`)
   }
 
-  // 5. Genre — vérifié depuis la base de données
+  // Ne marche pas
   if (agriculteur.genre && consommateurCommercant.genre) {
     const genreAgri = agriculteur.genre.toLowerCase().trim()
     const genreConso = consommateurCommercant.genre.toLowerCase().trim()
@@ -64,14 +64,14 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
       .filter(Boolean)
 
     if (genreAgri === genreConso) {
-      score += 5
+      score += 7
       details.push(`Même genre : ${agriculteur.genre} (+5 pts)`)
     } else if (
       genresDisponibles.includes(genreAgri) &&
       genresDisponibles.includes(genreConso)
     ) {
-      score += 7
-      details.push(`Genre complémentaire : ${agriculteur.genre} ↔ ${consommateurCommercant.genre} (+7 pts)`)
+      score += 5
+      details.push(`Genre opposé : ${agriculteur.genre} ↔ ${consommateurCommercant.genre} (+7 pts)`)
     }
   }
 
