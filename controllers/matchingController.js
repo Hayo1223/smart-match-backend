@@ -50,38 +50,18 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
   }
 
   
-  if (agriculteur.genre && consommateurCommercant.genre) {
+ if (agriculteur.genre && consommateurCommercant.genre) {
+  const genreAgri = agriculteur.genre.toLowerCase().trim()
+  const genreConso = consommateurCommercant.genre.toLowerCase().trim()
 
-    const genreAgri = agriculteur.genre.toLowerCase().trim()
-    const genreConso = consommateurCommercant.genre.toLowerCase().trim()
-
-    const [genreAgriculteurs, genreConsommateurCommercant] = await Promise.all([
-  prisma.agriculteur.findMany({
-    select: { genre: true },
-    distinct: ['genre']
-  }),
-  prisma.consommateurCommercant.findMany({
-    select: { genre: true },
-    distinct: ['genre']
-  })
-])
-
-const genresDisponibles = [
-  ...genreAgriculteurs.map(g => g.genre?.toLowerCase().trim()),
-  ...genreConsommateurCommercant.map(g => g.genre?.toLowerCase().trim())
-].filter(Boolean)
-
-    if (genreAgri === genreConso) {
-      score += 7
-      details.push(`Même genre : ${agriculteur.genre} (+7 pts)`)
-    } else if (
-      genresDisponibles.includes(genreAgri) &&
-      genresDisponibles.includes(genreConso)
-    ) {
-      score += 5
-      details.push(`Genre opposé : ${agriculteur.genre} et ${consommateurCommercant.genre} (+5 pts)`)
-    }
+  if (genreAgri === genreConso) {
+    score += 7
+    details.push(`Même genre : ${agriculteur.genre} (+7 pts)`)
+  } else {
+    score += 5
+    details.push(`Genre différent : ${agriculteur.genre} et ${consommateurCommercant.genre} (+5 pts)`)
   }
+}
 
   return { score, details }
 }
@@ -123,7 +103,7 @@ export const getMatches = async (req, res) => {
       consommateursCommercants.map(async conso => {
         const { score, details } = await calculateScore(agriculteur, conso)
         return {
-          consommateurId: conso.id,
+          consommateurCommercantId: conso.id,
           nomC: conso.nomC,
           prenomC: conso.prenomC,
           localisationC: conso.localisationC,
@@ -144,7 +124,8 @@ export const getMatches = async (req, res) => {
       .sort((a, b) => b.score - a.score)
 
     res.json({
-      nom: `${agriculteur.nom} ${agriculteur.prenom}`,
+      nom: `${agriculteur.nom}`,
+      prenom: `${agriculteur.prenom}`,
       totalMatches: matches.length,
       matches
     })
