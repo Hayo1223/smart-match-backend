@@ -38,6 +38,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'Smart Match API fonctionne' })
 })
 
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' })
+})
+
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`)
 })
