@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 3000
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://smart-match-dbmj.vercel.app'
+  'https://smart-match-dbmj.vercel.app',
+  'https://soukmart.netlify.app'
 ]
 
 app.use(cors({
