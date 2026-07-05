@@ -7,7 +7,7 @@ import profileRoutes from './routes/profileRoutes.js'
 import matchingRoutes from './routes/matchingRoutes.js'
 
 const app = express()
-const PORT = process.env.PORT || 5025
+const PORT = process.env.PORT || 3000
 
 const allowedOrigins = [
   'http://localhost:5173',
