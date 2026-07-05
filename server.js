@@ -43,6 +43,6 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' })
 })
 
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`)
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Serveur démarré sur le port ${PORT}`)
 })
