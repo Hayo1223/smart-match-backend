@@ -1,3 +1,4 @@
+
 {
   "name": "smart-match-backend",
   "version": "1.0.0",
@@ -23,13 +24,9 @@
   },
 
   "scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js",
-
-  "prisma:generate": "prisma generate",
-  "prisma:migrate": "prisma migrate dev",
-  "prisma:studio": "prisma studio"
+    "postinstall": "prisma generate",
+    "build": "prisma generate",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  }
 }
-
-}
-
