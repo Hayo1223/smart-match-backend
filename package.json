@@ -9,6 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
     "@prisma/adapter-neon": "^7.8.0",
@@ -22,8 +25,7 @@
   },
 
   "devDependencies": {
-
-    "nodemon": "^3.1.14",
+   "nodemon": "^3.1.14",
     "@types/node": "^22.0.0"
   },
   
