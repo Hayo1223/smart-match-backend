@@ -9,8 +9,22 @@ import matchingRoutes from './routes/matchingRoutes.js'
 const app = express()
 const PORT = process.env.PORT || 5025
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://smart-match-dbmj.vercel.app'
+]
 
-app.use(cors())
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error(`Origine non autorisée : ${origin}`))
+    }
+  },
+  credentials: true
+}))
+
 app.use(express.json())
 
 
@@ -21,7 +35,7 @@ app.use('/api/matching', matchingRoutes)
 
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Smart Match API fonctionne [Yes]' })
+  res.json({ message: 'Smart Match API fonctionne' })
 })
 
 app.listen(PORT, () => {
