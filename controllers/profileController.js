@@ -15,7 +15,7 @@ export const upsertProfile = async (req, res) => {
       return res.json({ message: 'Profil agriculteur sauvegardé', profile })
     }
 
-    if (role === 'Commercant' || role === 'Consommateur') {
+    if (role === 'ConsommateurCommercant') {
       const profile = await prisma.consommateurCommercant.upsert({
         where: { userId },
         update: data,
@@ -32,7 +32,7 @@ export const upsertProfile = async (req, res) => {
   }
 }
 
-// GET /api/profile — Consulter son propre profil
+
 export const getProfile = async (req, res) => {
   try {
     const { userId, role } = req.user
@@ -41,7 +41,7 @@ export const getProfile = async (req, res) => {
 
     if (role === 'Agriculteur') {
       profile = await prisma.agriculteur.findUnique({ where: { userId } })
-    } else if (role === 'Commercant' || role === 'Consommateur') {
+    }  if (role === 'ConsommateurCommercant') {
       profile = await prisma.consommateurCommercant.findUnique({ where: { userId } })
     }
 

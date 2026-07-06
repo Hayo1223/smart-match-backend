@@ -12,8 +12,8 @@ export const register = async (req, res) => {
       return res.status(400).json({ error: 'Email, mot de passe et rôle sont requis' })
     }
 
-    if (!['Agriculteur', 'Commercant', 'Consommateur'].includes(role)) {
-      return res.status(400).json({ error: 'Rôle invalide. Choisir Agriculteur ou Commercant/Consommateur' })
+    if (!['Agriculteur', 'ConsommateurCommercant'].includes(role)) {
+      return res.status(400).json({ error: 'Rôle invalide. Choisir Agriculteur ou Consommateur/Commercant' })
     }
 
     
