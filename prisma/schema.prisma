@@ -29,7 +29,7 @@ model Agriculteur {
     numeroAgriculwhatsapp String
     produit String []
     genre String
-    age String
+    age String ?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     
@@ -46,7 +46,7 @@ model ConsommateurCommercant {
   numeroWhatsapp String
   demande String []
   genre String
-  age String
+  age String ?
   metier String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
