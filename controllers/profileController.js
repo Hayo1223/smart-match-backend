@@ -56,3 +56,23 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ error: 'Erreur serveur' })
   }
 }
+
+export const deleteProfile = async (req, res) => {
+  try {
+    const { userId, role } = req.user
+
+    if (role === 'Agriculteur') {
+      await prisma.agriculteur.delete({ where: { userId } })
+    } else if (role === 'ConsommateurCommercant') {
+      await prisma.consommateurCommercant.delete({ where: { userId } })
+    } else {
+      return res.status(400).json({ error: 'Rôle invalide' })
+    }
+
+    res.json({ message: 'Profil supprimé' })
+
+  } catch (error) {
+    console.error('Erreur deleteProfile:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
