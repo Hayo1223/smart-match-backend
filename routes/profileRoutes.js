@@ -1,5 +1,4 @@
 import express from 'express'
-import { upsertProfile, getProfile } from '../controllers/profileController.js'
 import { upsertProfile, getProfile, deleteProfile } from '../controllers/profileController.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 
