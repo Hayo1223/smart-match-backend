@@ -26,10 +26,9 @@ export const uploadPhoto = async (req, res) => {
         data: { photoUrl: result.secure_url }
       })
     } else if (role === 'ConsommateurCommercant') {
-      await prisma.consommateurCommercant.upsert({
+      await prisma.consommateurCommercant.update({
         where: { userId },
-        update: { photoUrl: result.secure_url },
-        create: { userId, photoUrl: result.secure_url }
+        data: { photoUrl: result.secure_url }
       })
     }
 
