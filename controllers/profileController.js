@@ -35,12 +35,14 @@ export const upsertProfile = async (req, res) => {
 
 export const deleteProfile = async (req, res) => {
   try {
-    const { userId, role } = req.user
+    const { userId, id, role } = req.user
 
     if (role === 'Agriculteur') {
-      await prisma.agriculteur.delete({ where: { userId } })
+      await prisma.agriculteur.delete({ where: { userId } });
+      await prisma.user.delete({ where: { id }})
     } else if (role === 'ConsommateurCommercant') {
-      await prisma.consommateurCommercant.delete({ where: { userId } })
+      await prisma.consommateurCommercant.delete({ where: { userId } });
+     await prisma.user.delete({ where: { id } })
     } else {
       return res.status(400).json({ error: 'Rôle invalide' })
     }
