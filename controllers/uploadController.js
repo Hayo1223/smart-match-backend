@@ -29,10 +29,10 @@ export const uploadPhoto = async (req, res) => {
       await prisma.consommateurCommercant.update({
         where: { userId },
         data: { photoUrl: result.secure_url }
-      })
+      }) 
     }
 
-    res.json({
+    res.json({            
       message: 'Photo uploadée avec succès',
       photoUrl: result.secure_url
     })
