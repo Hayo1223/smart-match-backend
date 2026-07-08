@@ -8,5 +8,6 @@ const router = express.Router()
 router.post('/', authMiddleware, upsertProfile)
 router.get('/', authMiddleware, getProfile)
 router.delete('/', authMiddleware, deleteProfile)
+router.put('/', authMiddleware, upsertProfile)
 
 export default router
