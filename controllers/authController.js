@@ -7,7 +7,7 @@ export const register = async (req, res) => {
   try {
     const { email, password, role } = req.body
 
-    // Validation basique
+    
     if (!email || !password || !role) {
       return res.status(400).json({ error: 'Email, mot de passe et rôle sont requis' })
     }

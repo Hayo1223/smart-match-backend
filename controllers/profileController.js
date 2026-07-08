@@ -35,23 +35,18 @@ export const upsertProfile = async (req, res) => {
 
 export const deleteProfile = async (req, res) => {
   try {
-    const { userId, id, role } = req.user
+    const { userId } = req.user;
 
-    if (role === 'Agriculteur') {
-      await prisma.agriculteur.delete({ where: { userId } });
-      await prisma.user.delete({ where: { id }})
-    } else if (role === 'ConsommateurCommercant') {
-      await prisma.consommateurCommercant.delete({ where: { userId } });
-     await prisma.user.delete({ where: { id } })
-    } else {
-      return res.status(400).json({ error: 'Rôle invalide' })
-    }
+    await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
 
-    res.json({ message: 'Profil supprimé' })
-
+    res.json({ message: "Compte supprimé avec succès" });
   } catch (error) {
-    console.error('Erreur deleteProfile:', error)
-    res.status(500).json({ error: 'Erreur serveur' })
+    console.error("Erreur deleteProfile:", error);
+    res.status(500).json({ error: "Erreur serveur" });
   }
 }
 
