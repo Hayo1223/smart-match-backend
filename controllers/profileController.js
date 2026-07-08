@@ -1,6 +1,6 @@
 import prisma from '../lib/prismaClient.js'
 
-// POST /api/profile — Créer ou mettre à jour son profil
+
 export const upsertProfile = async (req, res) => {
   try {
     const { userId, role } = req.user
@@ -33,30 +33,6 @@ export const upsertProfile = async (req, res) => {
 }
 
 
-export const getProfile = async (req, res) => {
-  try {
-    const { userId, role } = req.user
-
-    let profile = null
-
-    if (role === 'Agriculteur') {
-      profile = await prisma.agriculteur.findUnique({ where: { userId } })
-    }  if (role === 'ConsommateurCommercant') {
-      profile = await prisma.consommateurCommercant.findUnique({ where: { userId } })
-    }
-
-    if (!profile) {
-      return res.status(404).json({ error: 'Profil inexistant, veuillez créer un profile' })
-    }
-
-    res.json({ profile })
-
-  } catch (error) {
-    console.error('Erreur getProfile:', error)
-    res.status(500).json({ error: 'Erreur serveur' })
-  }
-}
-
 export const deleteProfile = async (req, res) => {
   try {
     const { userId, role } = req.user
@@ -73,6 +49,29 @@ export const deleteProfile = async (req, res) => {
 
   } catch (error) {
     console.error('Erreur deleteProfile:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
+
+export const getProfile = async (req, res) => {
+  try {
+    const { userId, role } = req.user
+    let profile = null
+
+    if (role === 'Agriculteur') {
+      profile = await prisma.agriculteur.findUnique({ where: { userId } })
+    } else if (role === 'ConsommateurCommercant') {
+      profile = await prisma.consommateurCommercant.findUnique({ where: { userId } })
+    }
+
+    if (!profile) {
+      return res.status(404).json({ error: 'Profil non trouvé' })
+    }
+
+    res.json({ profile })
+
+  } catch (error) {
+    console.error('Erreur getProfile:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 }

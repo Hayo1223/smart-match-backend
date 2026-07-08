@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import profileRoutes from './routes/profileRoutes.js'
 import matchingRoutes from './routes/matchingRoutes.js'
+import uploadRoutes from './routes/uploadRoutes.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -33,6 +34,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/matching', matchingRoutes)
+app.use('/api/upload', uploadRoutes)
 
 
 app.get('/', (req, res) => {
