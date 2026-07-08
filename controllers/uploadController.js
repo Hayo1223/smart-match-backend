@@ -30,7 +30,7 @@ export const uploadPhoto = async (req, res) => {
         where: { userId },
         data: { photoUrl: result.secure_url }
       }) 
-    }
+    }      
 
     res.json({            
       message: 'Photo uploadée avec succès',
