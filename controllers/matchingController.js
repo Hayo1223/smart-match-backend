@@ -113,6 +113,7 @@ export const getMatches = async (req, res) => {
           numeroMobile: conso.numeroMobile,
           numeroWhatsapp: conso.numeroWhatsapp,
           email: conso.user.email,
+          photoUrl: conso.photoUrl || null,
           score,
           matchDetails: details
         }
