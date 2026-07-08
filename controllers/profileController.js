@@ -56,18 +56,16 @@ export const getProfile = async (req, res) => {
     let profile = null
 
     if (role === 'Agriculteur') {
-      profile = await prisma.agriculteur.findUnique({
-        where: { userId }
-      })
+      profile = await prisma.agriculteur.findUnique({ where: { userId } })
     } else if (role === 'ConsommateurCommercant') {
-      profile = await prisma.consommateurCommercant.findUnique({
-        where: { userId }
-      })
+      profile = await prisma.consommateurCommercant.findUnique({ where: { userId } })
     }
 
-    return res.json({
-      profile: profile || null
-    })
+    if (!profile) {
+      return res.status(404).json({ error: 'Profil non trouvé' })
+    }
+
+    res.json({ profile })
 
   } catch (error) {
     console.error('Erreur getProfile:', error)
