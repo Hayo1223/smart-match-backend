@@ -4,7 +4,9 @@ import prisma from '../lib/prismaClient.js'
 export const upsertProfile = async (req, res) => {
   try {
     const { userId, role } = req.user
+     console.log("BODY =", JSON.stringify(req.body, null, 2));
     const data = req.body
+     console.log("DATA =", JSON.stringify(data, null, 2));
 
     if (role === 'Agriculteur') {
       const profile = await prisma.agriculteur.upsert({
