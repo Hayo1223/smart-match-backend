@@ -6,11 +6,11 @@ import userRoutes from './routes/userRoutes.js'
 import profileRoutes from './routes/profileRoutes.js'
 import matchingRoutes from './routes/matchingRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
-import aviRoutes from './routes/avisRoutes.js'
+import avisRoutes from './routes/avisRoutes.js' 
 
 const app = express()
 const PORT = process.env.PORT || 3000
-
+ 
 const allowedOrigins = [
   'http://localhost:5173',
   'https://smart-match-dbmj.vercel.app',
