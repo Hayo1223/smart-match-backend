@@ -15,6 +15,8 @@ model User {
   updatedAt DateTime @updatedAt
   Agriculteur Agriculteur?
   ConsommateurCommercant ConsommateurCommercant?
+  avisLaisses            Avis[]                   @relation("AvisAuteur")
+  avisRecus              Avis[]                   @relation("AvisCible")
 }
 
 model Agriculteur {
@@ -53,3 +55,15 @@ model ConsommateurCommercant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 } 
+
+model Avis {
+  id            Int      @id @default(autoincrement())
+  note          Int      
+  commentaire   String?  
+  auteurId      Int
+  auteur        User     @relation("AvisAuteur", fields: [auteurId], references: [id], onDelete: Cascade)
+  cibleId       Int
+  cible         User     @relation("AvisCible", fields: [cibleId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  @@unique([auteurId, cibleId]) 
+}

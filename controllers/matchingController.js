@@ -104,6 +104,7 @@ export const getMatches = async (req, res) => {
         const { score, details } = await calculateScore(agriculteur, conso)
         return {
           consommateurCommercantId: conso.id,
+          userId: conso.userId,
           nomC: conso.nomC,
           prenomC: conso.prenomC,
           localisationC: conso.localisationC,
