@@ -66,6 +66,50 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
   return { score, details }
 }
 
+
+export const getMesAgriculteurs = async (req, res) => {
+  try {
+    const { userId, role } = req.user
+
+    if (role !== 'ConsommateurCommercant') {
+      return res.status(403).json({
+        error: 'Seuls les consommateurs peuvent accéder à cette page'
+      })
+    }
+
+    
+    const agriculteurs = await prisma.agriculteur.findMany({
+      include: {
+        user: { select: { id: true, email: true } }
+      }
+    })
+
+    if (agriculteurs.length === 0) {
+      return res.json({ agriculteurs: [] })
+    }
+
+    res.json({
+      totalAgriculteurs: agriculteurs.length,
+      agriculteurs: agriculteurs.map(a => ({
+        agriculteurId: a.id,
+        userId: a.userId,
+        nom: a.nom,
+        prenom: a.prenom,
+        localisation: a.localisation,
+        produit: a.produit,
+        numeroMobile: a.numeroAgriculmobile,
+        numeroWhatsapp: a.numeroAgriculwhatsapp,
+        photoUrl: a.photoUrl || null,
+        email: a.user.email
+      }))
+    })
+
+  } catch (error) {
+    console.error('Erreur getMesAgriculteurs:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
+
 export const getMatches = async (req, res) => {
   try {
     const { userId, role } = req.user
