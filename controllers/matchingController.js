@@ -79,6 +79,9 @@ export const getMesAgriculteurs = async (req, res) => {
 
     
     const agriculteurs = await prisma.agriculteur.findMany({
+      where: {
+        available: true
+         },
       include: {
         user: { select: { id: true, email: true } }
       }
