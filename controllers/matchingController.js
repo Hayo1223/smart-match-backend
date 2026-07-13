@@ -116,6 +116,18 @@ export const getMesAgriculteurs = async (req, res) => {
 export const getMatches = async (req, res) => {
   try {
     const { userId, role } = req.user
+    const {
+        nom,
+        prenom,
+        localisation,
+        produit,
+        scoreMin,
+        scoreMax
+      } = req.query;
+      const nomFilter = nom?.trim();
+      const prenomFilter = prenom?.trim();
+      const localisationFilter = localisation?.trim();
+      const produitFilter = produit?.trim();
 
     if (role !== 'Agriculteur') {
       return res.status(403).json({
@@ -172,11 +184,47 @@ export const getMatches = async (req, res) => {
       .filter(match => match.score > 0)
       .sort((a, b) => b.score - a.score)
 
+      let filteredMatches = matches;
+      if (nomFilter) {
+          filteredMatches = filteredMatches.filter(match =>
+          match.nomC?.toLowerCase().includes(nomFilter.toLowerCase())
+          );
+        }
+      if (prenomFilter) {
+          filteredMatches = filteredMatches.filter(match =>
+          match.prenomC?.toLowerCase().includes(prenomFilter.toLowerCase())
+          );
+        }
+      if (localisationFilter) {
+          filteredMatches = filteredMatches.filter(match =>
+          match.localisationC
+          ?.toLowerCase()
+          .includes(localisationFilter.toLowerCase())
+          );
+        }
+      if (produitFilter) {
+          filteredMatches = filteredMatches.filter(match =>
+          Array.isArray(match.demande) && match.demande.some(p =>
+          p.toLowerCase().includes(produitFilter.toLowerCase())
+            )
+          );
+        }
+      if (scoreMin) {
+          filteredMatches = filteredMatches.filter(
+          match => match.score >= Number(scoreMin)
+          );
+        }
+      if (scoreMax) {
+          filteredMatches = filteredMatches.filter(
+          match => match.score <= Number(scoreMax)
+          );
+        }  
+
     res.json({
       nom: `${agriculteur.nom}`,
       prenom: `${agriculteur.prenom}`,
-      totalMatches: matches.length,
-      matches
+      totalMatches: filteredMatches.length,
+      matches: filteredMatches
     })
 
   } catch (error) {
