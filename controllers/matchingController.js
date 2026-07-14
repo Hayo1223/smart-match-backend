@@ -74,9 +74,7 @@ export const getMesAgriculteurs = async (req, res) => {
         nom,
         prenom,
         localisation,
-        produit,
-        scoreMin,
-        scoreMax
+        produit
       } = req.query;
       const nomFilter = nom?.trim();
       const prenomFilter = prenom?.trim();
@@ -100,27 +98,27 @@ export const getMesAgriculteurs = async (req, res) => {
     })
 
     let filteredAgriculteurs = agriculteurs;
-    if (nom) {
+    if (nomFilter) {
     filteredAgriculteurs = filteredAgriculteurs.filter(a =>
-        a.nom.toLowerCase().includes(nom.toLowerCase())
+        a.nom.toLowerCase().includes(nomFilter.toLowerCase())
           );
          }
-    if (prenom) {
+    if (prenomFilter) {
           filteredAgriculteurs = filteredAgriculteurs.filter(a =>
-          a.prenom.toLowerCase().includes(prenom.toLowerCase())
+          a.prenom.toLowerCase().includes(prenomFilter.toLowerCase())
             );
           }
-    if (localisation) {
+    if (localisationFilter) {
           filteredAgriculteurs = filteredAgriculteurs.filter(a =>
           a.localisation
           ?.toLowerCase()
-          .includes(localisation.toLowerCase())
+          .includes(localisationFilter.toLowerCase())
             );
           }
-    if (produit) {
+    if (produitFilter) {
         filteredAgriculteurs = filteredAgriculteurs.filter(a =>
         a.produit?.some(p =>
-        p.toLowerCase().includes(produit.toLowerCase())
+        p.toLowerCase().includes(produitFilter.toLowerCase())
         )
           );
         }
