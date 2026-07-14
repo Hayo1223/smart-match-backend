@@ -70,6 +70,18 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
 export const getMesAgriculteurs = async (req, res) => {
   try {
     const { userId, role } = req.user
+    const {
+        nom,
+        prenom,
+        localisation,
+        produit,
+        scoreMin,
+        scoreMax
+      } = req.query;
+      const nomFilter = nom?.trim();
+      const prenomFilter = prenom?.trim();
+      const localisationFilter = localisation?.trim();
+      const produitFilter = produit?.trim();
 
     if (role !== 'ConsommateurCommercant') {
       return res.status(403).json({
@@ -79,7 +91,7 @@ export const getMesAgriculteurs = async (req, res) => {
 
     
     const agriculteurs = await prisma.agriculteur.findMany({
-      where: {
+        where: {
         available: true
          },
       include: {
@@ -87,13 +99,38 @@ export const getMesAgriculteurs = async (req, res) => {
       }
     })
 
+    let filteredAgriculteurs = agriculteurs;
+    if (nom) {
+    filteredAgriculteurs = filteredAgriculteurs.filter(a =>
+        a.nom.toLowerCase().includes(nom.toLowerCase())
+          );
+         }
+    if (prenom) {
+          filteredAgriculteurs = filteredAgriculteurs.filter(a =>
+          a.prenom.toLowerCase().includes(prenom.toLowerCase())
+            );
+          }
+    if (localisation) {
+          filteredAgriculteurs = filteredAgriculteurs.filter(a =>
+          a.localisation
+          ?.toLowerCase()
+          .includes(localisation.toLowerCase())
+            );
+          }
+    if (produit) {
+        filteredAgriculteurs = filteredAgriculteurs.filter(a =>
+        a.produit?.some(p =>
+        p.toLowerCase().includes(produit.toLowerCase())
+        )
+          );
+        }
     if (agriculteurs.length === 0) {
       return res.json({ agriculteurs: [] })
     }
 
     res.json({
-      totalAgriculteurs: agriculteurs.length,
-      agriculteurs: agriculteurs.map(a => ({
+      totalAgriculteurs: filteredAgriculteurs.length,
+      agriculteurs: filteredAgriculteurs.map(a => ({
         agriculteurId: a.id,
         userId: a.userId,
         nom: a.nom,
