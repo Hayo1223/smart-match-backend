@@ -6,5 +6,6 @@ const router = express.Router()
 
 router.get('/', authMiddleware, getMatches)
 router.get('/mes-agriculteurs', authMiddleware, getMesAgriculteurs)
+router.get('/agriculteurs/carte', getAgriculteursCarte)
 
 export default router

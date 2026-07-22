@@ -42,9 +42,13 @@
 
     "jsonwebtoken": "^9.0.3",
 
+    "leaflet": "^1.9.4",
+
     "multer": "^2.2.0",
 
-    "prisma": "^7.8.0"
+    "prisma": "^7.8.0",
+
+    "react-leaflet": "^5.0.0"
 
   },
 

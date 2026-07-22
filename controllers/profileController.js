@@ -15,7 +15,7 @@ export const upsertProfile = async (req, res) => {
       return res.json({ message: 'Profil agriculteur sauvegardé', profile })
     }
 
-    if (role === 'GrossiseCommerçant') {
+    if (role === 'GrossisteCommercant') {
       const profile = await prisma.grossiseCommercant.upsert({
         where: { userId },
         update: data,
@@ -57,7 +57,7 @@ export const getProfile = async (req, res) => {
 
     if (role === 'Agriculteur') {
       profile = await prisma.agriculteur.findUnique({ where: { userId } })
-    } else if (role === 'GrossiseCommerçant') {
+    } else if (role === 'GrossisteCommercant') {
       profile = await prisma.grossiseCommercant.findUnique({ where: { userId } })
     }
 

@@ -25,7 +25,10 @@ model Agriculteur {
     user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
     nom  String
     prenom  String
+    ville  String
     localisation  String
+    latitude      Float?
+    longitude     Float?
     available Boolean  @default(true)
     numeroAgriculmobile String 
     numeroAgriculwhatsapp String
@@ -45,6 +48,9 @@ model GrossisteCommercant {
   nomC String
   prenomC String
   localisationC String
+  latitude      Float?
+  longitude     Float?
+  villeC String
   numeroMobile String
   numeroWhatsapp String
   demande String []

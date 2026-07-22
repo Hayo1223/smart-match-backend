@@ -81,7 +81,7 @@ export const getMesAgriculteurs = async (req, res) => {
       const localisationFilter = localisation?.trim();
       const produitFilter = produit?.trim();
 
-    if (role !== 'grossiseCommercant') {
+    if (role !== 'GrossisteCommercant') {
       return res.status(403).json({
         error: 'Seuls les grossises peuvent accéder à cette page'
       })
@@ -144,6 +144,32 @@ export const getMesAgriculteurs = async (req, res) => {
 
   } catch (error) {
     console.error('Erreur getMesAgriculteurs:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
+
+export const getAgriculteursCarte = async (req, res) => {
+  try {
+    const agriculteurs = await prisma.agriculteur.findMany({
+      where: {
+        available: true,
+        latitude: { not: null },
+        longitude: { not: null }
+      },
+      select: {
+        id: true,
+        nom: true,
+        prenom: true,
+        produit: true,
+        latitude: true,
+        longitude: true,
+        photoUrl: true
+      }
+    })
+
+    res.json(agriculteurs)
+  } catch (error) {
+    console.error('Erreur getAgriculteursCarte:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 }
