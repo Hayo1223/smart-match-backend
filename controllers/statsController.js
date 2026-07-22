@@ -4,7 +4,7 @@ export const getStats = async (req, res) => {
   try {
     const [agriculteur, grossiseCommercant] = await Promise.all([
       prisma.agriculteur.count(),
-      prisma.consommateurCommercant.count()
+      prisma.grossiseCommercant.count()
     ])
 
     res.json({ agriculteur, grossiseCommercant })
