@@ -57,7 +57,7 @@ export const getProfile = async (req, res) => {
 
     if (role === 'Agriculteur') {
       profile = await prisma.agriculteur.findUnique({ where: { userId } })
-    } else if (role === 'GrossiseCommercant') {
+    } else if (role === 'GrossiseCommerçant') {
       profile = await prisma.grossiseCommercant.findUnique({ where: { userId } })
     }
 
