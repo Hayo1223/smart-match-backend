@@ -1,5 +1,5 @@
 import express from 'express'
-import { getMatches, getMesAgriculteurs } from '../controllers/matchingController.js'
+import { getMatches, getMesAgriculteurs, getAgriculteursCarte } from '../controllers/matchingController.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 
 const router = express.Router()
