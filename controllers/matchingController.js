@@ -217,7 +217,7 @@ export const getMatches = async (req, res) => {
         message: 'Aucun grossise disponible pour le moment',
         matches: []
       })
-    }
+    } 
 
     const matchesRaw = await Promise.all(
       grossisteCommercants.map(async conso => {
