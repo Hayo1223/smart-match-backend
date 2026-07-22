@@ -1,12 +1,12 @@
 import prisma from '../lib/prismaClient.js'
 
-const calculateScore = async (agriculteur, grossiseCommercant) => {
+const calculateScore = async (agriculteur, grossisteCommercant) => {
   let score = 0
   const details = []
 
   
   const produitsCommuns = agriculteur.produit.filter(p =>
-    grossiseCommercant.demande?.some(d =>
+    grossisteCommercant.demande?.some(d =>
       d.toLowerCase().trim() === p.toLowerCase().trim()
     )
   )
@@ -22,7 +22,7 @@ const calculateScore = async (agriculteur, grossiseCommercant) => {
     .map(m => m.trim())
     .filter(Boolean) ?? []
 
-  const locConsoMots = grossiseCommercant.localisationC
+  const locConsoMots = grossisteCommercant.localisationC
     ?.toLowerCase()
     .split(/[\s,\/\-]+/)
     .map(m => m.trim())
@@ -50,16 +50,16 @@ const calculateScore = async (agriculteur, grossiseCommercant) => {
   }
 
   
- if (agriculteur.genre && grossiseCommercant.genre) {
+ if (agriculteur.genre && grossisteCommercant.genre) {
   const genreAgri = agriculteur.genre.toLowerCase().trim()
-  const genreConso = grossiseCommercant.genre.toLowerCase().trim()
+  const genreConso = grossisteCommercant.genre.toLowerCase().trim()
 
   if (genreAgri === genreConso) {
     score += 7
     details.push(`Même genre : ${agriculteur.genre} (+7 pts)`)
   } else {
     score += 5
-    details.push(`Genre différent : ${agriculteur.genre} et ${grossiseCommercant.genre} (+5 pts)`)
+    details.push(`Genre différent : ${agriculteur.genre} et ${grossisteCommercant.genre} (+5 pts)`)
   }
 }
 
@@ -206,13 +206,13 @@ export const getMatches = async (req, res) => {
       })
     }
 
-    const grossiseCommercants = await prisma.grossiseCommercant.findMany({
+    const grossisteCommercants = await prisma.grossisteCommercant.findMany({
       include: {
         user: { select: { email: true } }
       }
     })
 
-    if (grossiseCommercants.length === 0) {
+    if (grossisteCommercants.length === 0) {
       return res.json({
         message: 'Aucun grossise disponible pour le moment',
         matches: []
@@ -220,10 +220,10 @@ export const getMatches = async (req, res) => {
     }
 
     const matchesRaw = await Promise.all(
-      grossiseCommercants.map(async conso => {
+      grossisteCommercants.map(async conso => {
         const { score, details } = await calculateScore(agriculteur, conso)
         return {
-          GrossiseCommercantId: conso.id,
+          GrossisteCommercantId: conso.id,
           userId: conso.userId,
           nomC: conso.nomC,
           prenomC: conso.prenomC,

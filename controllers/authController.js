@@ -13,7 +13,7 @@ export const register = async (req, res) => {
     }
 
     if (!['Agriculteur', 'GrossisteCommercant'].includes(role)) {
-      return res.status(400).json({ error: 'Rôle invalide. Choisir Agriculteur ou Grossise/Commercant' })
+      return res.status(400).json({ error: 'Rôle invalide. Choisir Agriculteur ou Grossiste/Commercant' })
     }
 
     

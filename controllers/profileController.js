@@ -16,12 +16,12 @@ export const upsertProfile = async (req, res) => {
     }
 
     if (role === 'GrossisteCommercant') {
-      const profile = await prisma.grossiseCommercant.upsert({
+      const profile = await prisma.grossisteCommercant.upsert({
         where: { userId },
         update: data,
         create: {...data, userId}
       })
-      return res.json({ message: 'Profil commerçant/grossise sauvegardé', profile })
+      return res.json({ message: 'Profil commerçant/grossiste sauvegardé', profile })
     }
 
     res.status(400).json({ error: 'Rôle invalide' })
@@ -58,7 +58,7 @@ export const getProfile = async (req, res) => {
     if (role === 'Agriculteur') {
       profile = await prisma.agriculteur.findUnique({ where: { userId } })
     } else if (role === 'GrossisteCommercant') {
-      profile = await prisma.grossiseCommercant.findUnique({ where: { userId } })
+      profile = await prisma.grossisteCommercant.findUnique({ where: { userId } })
     }
 
     if (!profile) {
