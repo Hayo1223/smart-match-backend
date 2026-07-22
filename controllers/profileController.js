@@ -15,7 +15,7 @@ export const upsertProfile = async (req, res) => {
       return res.json({ message: 'Profil agriculteur sauvegardé', profile })
     }
 
-    if (role === 'GrossiseCommercant') {
+    if (role === 'GrossiseCommerçant') {
       const profile = await prisma.grossiseCommercant.upsert({
         where: { userId },
         update: data,
