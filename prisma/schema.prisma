@@ -14,7 +14,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Agriculteur Agriculteur?
-  ConsommateurCommercant ConsommateurCommercant?
+  GrossisteCommercant GrossisteCommercant?
   avisLaisses            Avis[]                   @relation("AvisAuteur")
   avisRecus              Avis[]                   @relation("AvisCible")
 }
@@ -38,7 +38,7 @@ model Agriculteur {
     
 }
 
-model ConsommateurCommercant {
+model GrossisteCommercant {
   idC Int @id @default(autoincrement())
   userId Int @unique
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
