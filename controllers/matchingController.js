@@ -1,12 +1,12 @@
 import prisma from '../lib/prismaClient.js'
 
-const calculateScore = async (agriculteur, consommateurCommercant) => {
+const calculateScore = async (agriculteur, grossiseCommercant) => {
   let score = 0
   const details = []
 
   
   const produitsCommuns = agriculteur.produit.filter(p =>
-    consommateurCommercant.demande?.some(d =>
+    grossiseCommercant.demande?.some(d =>
       d.toLowerCase().trim() === p.toLowerCase().trim()
     )
   )
@@ -22,7 +22,7 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
     .map(m => m.trim())
     .filter(Boolean) ?? []
 
-  const locConsoMots = consommateurCommercant.localisationC
+  const locConsoMots = grossiseCommercant.localisationC
     ?.toLowerCase()
     .split(/[\s,\/\-]+/)
     .map(m => m.trim())
@@ -50,16 +50,16 @@ const calculateScore = async (agriculteur, consommateurCommercant) => {
   }
 
   
- if (agriculteur.genre && consommateurCommercant.genre) {
+ if (agriculteur.genre && grossiseCommercant.genre) {
   const genreAgri = agriculteur.genre.toLowerCase().trim()
-  const genreConso = consommateurCommercant.genre.toLowerCase().trim()
+  const genreConso = grossiseCommercant.genre.toLowerCase().trim()
 
   if (genreAgri === genreConso) {
     score += 7
     details.push(`Même genre : ${agriculteur.genre} (+7 pts)`)
   } else {
     score += 5
-    details.push(`Genre différent : ${agriculteur.genre} et ${consommateurCommercant.genre} (+5 pts)`)
+    details.push(`Genre différent : ${agriculteur.genre} et ${grossiseCommercant.genre} (+5 pts)`)
   }
 }
 
@@ -81,9 +81,9 @@ export const getMesAgriculteurs = async (req, res) => {
       const localisationFilter = localisation?.trim();
       const produitFilter = produit?.trim();
 
-    if (role !== 'ConsommateurCommercant') {
+    if (role !== 'grossiseCommercant') {
       return res.status(403).json({
-        error: 'Seuls les consommateurs peuvent accéder à cette page'
+        error: 'Seuls les grossises peuvent accéder à cette page'
       })
     }
 
@@ -180,24 +180,24 @@ export const getMatches = async (req, res) => {
       })
     }
 
-    const consommateursCommercants = await prisma.consommateurCommercant.findMany({
+    const grossiseCommercants = await prisma.grossiseCommercant.findMany({
       include: {
         user: { select: { email: true } }
       }
     })
 
-    if (consommateursCommercants.length === 0) {
+    if (grossiseCommercants.length === 0) {
       return res.json({
-        message: 'Aucun consommateur disponible pour le moment',
+        message: 'Aucun grossise disponible pour le moment',
         matches: []
       })
     }
 
     const matchesRaw = await Promise.all(
-      consommateursCommercants.map(async conso => {
+      grossiseCommercants.map(async conso => {
         const { score, details } = await calculateScore(agriculteur, conso)
         return {
-          consommateurCommercantId: conso.id,
+          GrossiseCommercantId: conso.id,
           userId: conso.userId,
           nomC: conso.nomC,
           prenomC: conso.prenomC,
