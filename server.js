@@ -41,7 +41,7 @@ app.use('/api/upload', uploadRoutes)
 app.use('/api/avis', avisRoutes)
 app.use('/api/stats', statsRoutes)
 
-
+ 
 app.get('/', (req, res) => {
   res.json({ message: 'Smart Match API fonctionne' })
 })
