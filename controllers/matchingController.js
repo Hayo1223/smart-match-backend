@@ -223,7 +223,7 @@ export const getMatches = async (req, res) => {
       grossisteCommercants.map(async conso => {
         const { score, details } = await calculateScore(agriculteur, conso)
         return {
-          GrossisteCommercantId: conso.id,
+          GrossisteCommercantId: conso.idC,
           userId: conso.userId,
           nomC: conso.nomC,
           prenomC: conso.prenomC,

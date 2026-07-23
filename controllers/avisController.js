@@ -10,12 +10,13 @@ export const laisserAvis = async (req, res) => {
     if (!cibleId || !note) {
       return res.status(400).json({ error: 'cibleId et note sont requis' })
     }
-
-    if (note < 1 || note > 5) {
+    
+    const noteInt = parseInt(note)
+    if (noteInt < 1 || noteInt > 5) {
       return res.status(400).json({ error: 'La note doit être entre 1 et 5' })
     }
 
-    if (userId === cibleId) {
+    if (userId === parseInt(cibleId)) {
       return res.status(400).json({ error: 'Vous ne pouvez pas vous noter vous-même' })
     }
 
@@ -24,8 +25,8 @@ export const laisserAvis = async (req, res) => {
       where: {
         auteurId_cibleId: { auteurId: userId, cibleId: parseInt(cibleId) }
       },
-      update: { note, commentaire },
-      create: { auteurId: userId, cibleId: parseInt(cibleId), note, commentaire }
+      update: { note: noteInt, commentaire },
+      create: { auteurId: userId, cibleId: parseInt(cibleId), note: noteInt, commentaire }
     })
 
     res.status(201).json({ message: 'Avis enregistré avec succès', avis })
